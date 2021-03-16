@@ -3,39 +3,26 @@ from torch import nn
 
 import numpy as np
 from LoadTrainingData import LoadTrainingData
+from CustomDataLoader import data_set
 import json
 
 
-data = LoadTrainingData()
-testing = data.getTestingData()
-training = data.getTrainingData()
-print(training)
+data = LoadTrainingData('C:/Users/kf7mx/Documents/Projects/Sit Up Detector Reps Tracker/training-data/time-freq-1-mil/1-milisecond-1','C:/Users/kf7mx/Documents/Projects/Sit Up Detector Reps Tracker/training-data/time-freq-1-mil/1-milisecond-0')
+testingTrue = data.getTestingTrueData()
+trainingTrue = data.getTrainingTrueData()
+testingFalse = data.getTestingFalseData()
+trainingFalse = data.getTrainingFalseData()
 
-print(type(training[0][0][0]))
-#trainingTensor = torch.from_numpy(np.array(training))
-#testingTensor = torch.from_numpy(np.array(testing))
+dataLoader = data_set(trainingTrue,trainingFalse,testingTrue,testingFalse)
 
-# Opening JSON file
-f = open('C:/Users/kf7mx/Documents/Projects/Sit Up Detector Reps Tracker/training-data/time-freq-1-mil/1-milisecond-1/sitUpData.json', )
 
-# returns JSON object as
-# a dictionary
-sitUps = json.load(f)
+# print(training)
 
-#print(data)
-# Iterating through the json
-# list
-allSitUpsData = []
-for sitUp in sitUps:
-    sitUpData = []
-    for instance in sitUp:
-        xyz = [instance['x'],instance['y'],instance['z']]
-        sitUpData.append(xyz)
-    allSitUpsData.append(sitUpData)
+# print(type(training[0][0][0]))
 
-print(allSitUpsData[0][0])
-# Closing file
-f.close()
+
+
+
 
 # ## Testing and seeing what the tensor has to be to be sent into the network
 # import torchvision.datasets as dsets

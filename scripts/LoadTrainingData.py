@@ -5,21 +5,29 @@ import numpy as np
 
 # Opening JSON file
 class LoadTrainingData:
-    def __init__(self):
+    def __init__(self,trueLabelDirPath,falseLabelDirPath):
+        self.trueLabelDirPath = trueLabelDirPath
+        self.falseLabelDirPath = falseLabelDirPath
+
+
+        self.trainingListTrue, self.testingListTrue = self.loadData(self.trueLabelDirPath)
+        self.trainingListFalse, self.testingListFalse = self.loadData(self.falseLabelDirPath)
+
+#        self.loadData()
+
         pass
-    def load1Data(self):
-        dirPath = "C:/Users/kf7mx/Documents/Projects/Sit Up Detector Reps Tracker/training-data/time-freq-1-mil/1-milisecond-1"
-        self.fileList = []
-        self.trainingList = []
-        self.testingList = []
+    def loadData(self,dirPath):
+        fileList = []
+        trainingList = []
+        testingList = []
         for root, dirs, files in os.walk(dirPath):
             for file in files:
                 #append the file name to the list
-                self.fileList.append(os.path.join(root,file))
+                fileList.append(os.path.join(root,file))
 
 
-        self.allSitUpsData = []
-        for filePath in self.fileList:
+        allSitUpsData = []
+        for filePath in fileList:
             file = open(filePath)
             jsonFromFile = json.load(file)
             for sitUp in jsonFromFile:
@@ -27,27 +35,34 @@ class LoadTrainingData:
                 for instance in sitUp:
                     xyz = [float(instance['x']), float(instance['y']), float(instance['z'])]
                     sitUpData.append(xyz)
-                self.allSitUpsData.append(np.array(sitUpData))
-        random.shuffle(self.allSitUpsData)
+                allSitUpsData.append(np.array(sitUpData))
+        random.shuffle(allSitUpsData)
 
-        sizeOfTrainingSet = self.allSitUpsData.__len__()
+        sizeOfTrainingSet = allSitUpsData.__len__()
         sizeOfTestingSet = int(sizeOfTrainingSet*0.10)
         sizeOfTrainingSet = sizeOfTrainingSet -sizeOfTestingSet
         for i in range(0,sizeOfTestingSet):
-            self.testingList.append(self.allSitUpsData[i])
+            testingList.append(allSitUpsData[i])
         for i in range(sizeOfTestingSet,sizeOfTrainingSet):
-            self.trainingList.append(self.allSitUpsData[i])
+            trainingList.append(allSitUpsData[i])
+        return trainingList, testingList
 # print(allSitUpsData)
 # print(allSitUpsData[0][0])
 
-    def getTrainingData(self):
-        return self.trainingList
+    def getTrainingTrueData(self):
+        return self.trainingListTrue
 
 
-    def getTestingData(self):
-        return self.testingList
+    def getTestingTrueData(self):
+        return self.testingListTrue
 
 
+    def getTrainingFalseData(self):
+        return self.trainingListFalse
+
+
+    def getTestingFalseData(self):
+        return self.testingListFalse
 
 
 
